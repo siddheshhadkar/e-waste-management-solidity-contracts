@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.16;
 
 contract AddressManager{
 
@@ -14,11 +14,11 @@ contract AddressManager{
         owner = msg.sender;
     }
 
-    function setAddress(string _contractName, address _contractAddress) public onlyOwner{
+    function setAddress(string memory _contractName, address _contractAddress) public onlyOwner{
         contractAddress[_contractName] = _contractAddress;
     }
 
-    function getAddress(string _contractName) view public returns(address) onlyOwner{
+    function getAddress(string memory _contractName) public view onlyOwner returns(address){
         return contractAddress[_contractName];
     }
 }

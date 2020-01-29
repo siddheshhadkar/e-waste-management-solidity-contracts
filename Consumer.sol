@@ -1,37 +1,39 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.16;
+import "./AddressManager.sol";
+import "./Retailer.sol";
 
 contract Consumer{
 
+    mapping(uint => ConsumerDetails) consumers;
     uint public consumerCount;
-    mapping(uint => Consumer) consumers;
-    address public addressRT;
+    address public retailerContractAddress;
     address owner;
     AddressManager am;
-    Producer prInstance;
+    Retailer retailerInstance;
 
     modifier onlyOwner(){
         require(msg.sender == owner);
         _;
     }
 
-    constructor(address _parentAddress) public{
+    constructor(address _addressManager) public{
         owner = msg.sender;
-        am = AddressManager(address(_parentAddress));
+        am = AddressManager(address(_addressManager));
     }
 
-    struct Consumer{
+    struct ConsumerDetails{
         uint _id;
         string _name;
     }
 
-    function addConsumer(string _name) public{
+    function addConsumer(string memory _name) public{
         consumerCount++;
-        consumers[consumerCount] = Consumer(consumerCount, _name);
+        consumers[consumerCount] = ConsumerDetails(consumerCount, _name);
     }
 
     function getRTAddress() public onlyOwner{
-        addressRT = am.getAddress("RT");
-        prInstance(address(addressRT));
+        retailerContractAddress = am.getAddress("RT");
+        retailerInstance = Retailer(address(retailerContractAddress));
     }
 
     function sellWaste() public{
