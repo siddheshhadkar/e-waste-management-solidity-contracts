@@ -4,7 +4,7 @@ import "./Consumer.sol";
 import "./Producer.sol";
 import "./Retailer.sol";
 
-contract Collection Centre{
+contract CollectionCentre{
 	mapping(uint => CollectionCentreDetails) CollectionCentres;
     uint public CollectionCentreCount;
     address public producerContractAddress;
