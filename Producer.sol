@@ -51,6 +51,8 @@ contract Producer {
 		uint amount=msg.value;
 		balanceOfProducer+=amount;
 
+		require (!soldHistory[_productId]);
+		
 		soldHistory[_productId]=_adressRetailer;
 	}
 
