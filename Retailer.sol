@@ -43,6 +43,11 @@ contract Retailer{
         producerInstance = Producer(address(producerContractAddress));
     }
 
+    function buyFromProducer () public {
+        
+    }
+    
+
     function makeConsumerPayment() public payable{
 
     }
