@@ -4,6 +4,7 @@ import "./AddressManager.sol";
 import "./Consumer.sol";
 import "./CollectionCentre.sol";
 import "./Retailer.sol";
+import "./RecycleUnit.sol";
  
 contract Producer {
 
@@ -12,11 +13,15 @@ contract Producer {
 	
 	address owner;
 	address producer;
-	AddressManager am;
+	AddressManager amInstance;
 	uint productCount;
 	uint balanceOfProducer;
 	address public retailerContractAddress;
-	Producer producerInstance;
+	address public recycleUnitContractAddress;
+	address public collectionCentreContractAddress;
+	Retailer retailerInstance;
+	CollectionCentre collectionCentreInstance;
+	RecycleUnit recycleUnitInstance;
 
 	modifier onlyOwner(){
         require(msg.sender == owner);
@@ -30,16 +35,16 @@ contract Producer {
 
     struct Product {
     	string name;
-    	string type;
+    	string typeOfProduct;
     }
     
 	
-	constructor(address memory _addressManager) public {
+	constructor(address _addressManager) public {
     	owner=msg.sender;
-    	am=AddressManager(address(_addressManager));
+    	amInstance=AddressManager(address(_addressManager));
 	}
 
-	function setProducerAddress (address memory _producer) public onlyOwner {
+	function setProducerAddress (address _producer) public onlyOwner {
 		producer=_producer;
 	}
 	
@@ -49,18 +54,28 @@ contract Producer {
 		productStock[productCount]=Product(_name,_type);
 	}
 
-	function getProducerAddress() public onlyOwner{
-        producerContractAddress = am.getAddress("Producer");
-        producerInstance = Producer(address(producerContractAddress));
+	function createRetailerInstance() public onlyOwner{
+        retailerContractAddress = amInstance.getAddress("Retailer");
+        retailerInstance = Retailer(address(retailerContractAddress));
+    }
+    
+    function createRecycleUnitInstance() public onlyOwner{
+        recycleUnitContractAddress = amInstance.getAddress("RecycleUnit");
+        recycleUnitInstance = RecycleUnit(address(recycleUnitContractAddress));
+    }
+    
+    function createCollectionCentreInstance() public onlyOwner{
+        collectionCentreContractAddress = amInstance.getAddress("CollectionCentre");
+        collectionCentreInstance = CollectionCentre(address(collectionCentreContractAddress));
     }
 	
-	function sellToRetailer (address _adressRetailer,uint _productId) public payable{
-		uint amount=msg.value;
-		balanceOfProducer+=amount;
+	function sellToRetailer(address _addressRetailer,uint _productId) public payable{
+// 		uint amount=msg.value;
+// 		balanceOfProducer+=amount;
 
-		require (!soldHistory[_productId]);
 		
-		soldHistory[_productId]=_adressRetailer;
+		
+		soldHistory[_productId]=_addressRetailer;
 	}
 
 
@@ -68,7 +83,3 @@ contract Producer {
 	
 
 }
-
-  
-
-

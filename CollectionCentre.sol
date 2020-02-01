@@ -1,17 +1,17 @@
 pragma solidity ^0.5.16;
 import "./AddressManager.sol";
-import "./Consumer.sol";
 import "./Producer.sol";
-import "./Retailer.sol";
+import "./RecycleUnit.sol";
 
 contract CollectionCentre{
 	mapping(uint => CollectionCentreDetails) CollectionCentres;
-    uint public CollectionCentreCount;
-    address public producerContractAddress;
-    address public RecycleUnitContractAddress;
     address owner;
+    uint public collectionCentreCount;
+    address public producerContractAddress;
+    address public recycleUnitContractAddress;
+    AddressManager amInstance;
     Producer producerInstance;
-    RecycleUnit RUInstance;
+    RecycleUnit recycleUnitInstance;
 
     modifier onlyOwner(){
         require(msg.sender == owner);
@@ -20,7 +20,7 @@ contract CollectionCentre{
 
     constructor(address _addressManager) public{
         owner = msg.sender;
-        am = AddressManager(address(_addressManager));
+        amInstance = AddressManager(address(_addressManager));
     }
 
     struct CollectionCentreDetails{
@@ -29,18 +29,18 @@ contract CollectionCentre{
     }
 
     function addCollectionCentre(string memory _name) public{
-        CollectionCentreCount++;
-        CollectionCentres[CollectionCentreCount] = CollectionCentreDetails(CollectionCentreCount, _name);
+        collectionCentreCount++;
+        CollectionCentres[collectionCentreCount] = CollectionCentreDetails(collectionCentreCount, _name);
     }
 
-    function getProducerAddress() public onlyOwner{
-        producerContractAddress = am.getAddress("Producer");
+    function createProducerInstance() public onlyOwner{
+        producerContractAddress = amInstance.getAddress("Producer");
         producerInstance = Producer(address(producerContractAddress));
     }
 
-    function getRecycleUnitAddress() public onlyOwner{
-        RecycleUnitContractAddress = am.getAddress("RecycleUnit");
-        RUInstance = RecycleUnit(address(RecycleUnitContractAddress));
+    function createRecycleUnitInstance() public onlyOwner{
+        recycleUnitContractAddress = amInstance.getAddress("RecycleUnit");
+        recycleUnitInstance = RecycleUnit(address(recycleUnitContractAddress));
     }
 
     function receiveItemProducer() public{

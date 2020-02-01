@@ -1,15 +1,18 @@
 pragma solidity ^0.5.16;
 import "./AddressManager.sol";
 import "./CollectionCentre.sol";
+import "./Producer.sol";
 
 contract RecycleUnit{
 
     mapping(uint => RecycleUnitDetails) RecycleUnits;
     uint public RecycleUnitCount;
-    address public CollectionCentreContractAddress;
+    address public collectionCentreContractAddress;
     address owner;
-    AddressManager am;
-    CollectionCentre CollectionCentreInstance;
+    AddressManager amInstance;
+    CollectionCentre collectionCentreInstance;
+    address public producerContractAddress;
+    Producer producerInstance;
 
     modifier onlyOwner(){
         require(msg.sender == owner);
@@ -18,7 +21,7 @@ contract RecycleUnit{
 
     constructor(address _addressManager) public{
         owner = msg.sender;
-        am = AddressManager(address(_addressManager));
+        amInstance = AddressManager(address(_addressManager));
     }
 
     struct RecycleUnitDetails{
@@ -31,12 +34,15 @@ contract RecycleUnit{
         RecycleUnits[RecycleUnitCount] = RecycleUnitDetails(RecycleUnitCount, _name);
     }
 
-    function getCollectionCentreAddress() public onlyOwner{
-        CollectionCentreContractAddress = am.getAddress("CollectionCentre");
-        CollectionCentreInstance = CollectionCentre(address(CollectionCentreContractAddress));
+    function createCollectionCentreInstance() public onlyOwner{
+        collectionCentreContractAddress = amInstance.getAddress("CollectionCentre");
+        collectionCentreInstance = CollectionCentre(address(collectionCentreContractAddress));
     }
-
     
+    function createProducerInstance() public onlyOwner{
+        producerContractAddress = amInstance.getAddress("Producer");
+        producerInstance = Producer(address(producerContractAddress));
+    }
 
     function receiveItemCollectionCentre() public{
 

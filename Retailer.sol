@@ -10,7 +10,7 @@ contract Retailer{
     address public consumerContractAddress;
     address public producerContractAddress;
     address owner;
-    AddressManager am;
+    AddressManager amInstance;
     Consumer consumerInstance;
     Producer producerInstance;
 
@@ -21,7 +21,7 @@ contract Retailer{
 
     constructor(address _addressManager) public{
         owner = msg.sender;
-        am = AddressManager(address(_addressManager));
+        amInstance = AddressManager(address(_addressManager));
     }
 
     struct RetailerDetails{
@@ -29,25 +29,24 @@ contract Retailer{
         string _name;
     }
 
-    function addRetailer(string memory _name) public{
+    function addRetailer(string memory _name) public onlyOwner{
         retailerCount++;
         retailers[retailerCount] = RetailerDetails(retailerCount, _name);
     }
 
-    function getConsumerAddress() public onlyOwner{
-        consumerContractAddress = am.getAddress("Consumer");
+    function createConsumerInstance() public onlyOwner{
+        consumerContractAddress = amInstance.getAddress("Consumer");
         consumerInstance = Consumer(address(consumerContractAddress));
     }
-    function getProducerAddress() public onlyOwner{
-        producerContractAddress = am.getAddress("Producer");
+    function createProducerInstance() public onlyOwner{
+        producerContractAddress = amInstance.getAddress("Producer");
         producerInstance = Producer(address(producerContractAddress));
     }
 
-    function buyFromProducer () public {
-        
+    function buyFromProducer(uint _productId) public {
+        // producerInstance.sellToRetailer()
     }
     
-
     function makeConsumerPayment() public payable{
 
     }

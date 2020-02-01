@@ -8,7 +8,7 @@ contract Consumer{
     uint public consumerCount;
     address public retailerContractAddress;
     address owner;
-    AddressManager am;
+    AddressManager amInstance;
     Retailer retailerInstance;
 
     modifier onlyOwner(){
@@ -18,7 +18,7 @@ contract Consumer{
 
     constructor(address _addressManager) public{
         owner = msg.sender;
-        am = AddressManager(address(_addressManager));
+        amInstance = AddressManager(address(_addressManager));
     }
 
     struct ConsumerDetails{
@@ -31,13 +31,15 @@ contract Consumer{
         consumers[consumerCount] = ConsumerDetails(consumerCount, _name);
     }
 
-    function getRTAddress() public onlyOwner{
-        retailerContractAddress = am.getAddress("RT");
+    function createRetailerInstance() public onlyOwner payable{
+        retailerContractAddress = amInstance.getAddress("Retailer");
         retailerInstance = Retailer(address(retailerContractAddress));
     }
 
     function sellWaste() public{
-
+        //TODO: code for selling waste 
+        
+        //receivePayment();
     }
 
     function receivePayment() public payable{

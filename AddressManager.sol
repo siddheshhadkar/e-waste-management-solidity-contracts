@@ -18,7 +18,7 @@ contract AddressManager{
         contractAddress[_contractName] = _contractAddress;
     }
 
-    function getAddress(string memory _contractName) public view onlyOwner returns(address){
+    function getAddress(string memory _contractName) public payable onlyOwner returns(address){
         return contractAddress[_contractName];
     }
 }
