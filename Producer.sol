@@ -15,6 +15,8 @@ contract Producer {
 	AddressManager am;
 	uint productCount;
 	uint balanceOfProducer;
+	address public retailerContractAddress;
+	Producer producerInstance;
 
 	modifier onlyOwner(){
         require(msg.sender == owner);
@@ -46,6 +48,11 @@ contract Producer {
 		productCount++;
 		productStock[productCount]=Product(_name,_type);
 	}
+
+	function getProducerAddress() public onlyOwner{
+        producerContractAddress = am.getAddress("Producer");
+        producerInstance = Producer(address(producerContractAddress));
+    }
 	
 	function sellToRetailer (address _adressRetailer,uint _productId) public payable{
 		uint amount=msg.value;
